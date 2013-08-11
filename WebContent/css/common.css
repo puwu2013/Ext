@@ -1,0 +1,16 @@
+/*!
+ * common.css
+ * qin_kangkang
+ */
+ .red-row {
+ 	background-color : #F5C0C0 !important;
+ }
+ .yellow-row {
+ 	background-color : #FBF8BF !important;
+ }
+ .green-row {
+ 	background-color : #99CC99 !important;
+ }
+  .focus-row {
+ 	background-color : #99FF99 !important;
+ }

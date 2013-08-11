@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="./ext/resources/css/ext-all.css" />
+<script type="text/javascript" src="./ext/adapter/ext/ext-base.js"></script>
+<script type="text/javascript" src="./ext/ext-all.js"></script>
+<script type="text/javascript" src="./ext/src/locale/ext-lang-zh_CN.js"></script>
+<title>Ext</title>
+</head>
+<script type="text/javascript">
+	var msg = "Hello,Baby!";
+	Ext.onReady(function(){
+		//Ext.MessageBox.alert('hello world', msg);
+		Person = function(name) {
+			this.name = name;
+			this.addEvents("walk","eat","sleep");			
+		}
+		Ext.extend(Person, Ext.util.Observable, {
+			info : function(event) {
+				return this.name + 'is' + event + 'ing';
+			}
+		});
+		var person = new Person('普乌');
+		person.on('walk', function(){
+			Ext.Msg.alert('walk event', person.name + "走四方啊你！");
+		});
+		person.on('eat', function(lunch){
+			Ext.Msg.alert('eat event', person.name + "中午吃" + lunch);
+		});
+		person.on('sleep', function(time){
+			Ext.Msg.alert('sleep event', person.name + time.format("H") + "点睡觉！");
+		});
+		Ext.get('walk').on('click', function(){
+			person.fireEvent('walk');
+		});
+		Ext.get('eat').on('click', function(){
+			person.fireEvent('eat', '米饭');
+		});
+		Ext.get('sleep').on('click', function(){
+			person.fireEvent('sleep', new Date());
+		});
+		var test = Ext.get('test');
+		test.on('click', function(){
+			alert("handler1");
+		});
+		// 不会覆盖第一个事件
+		test.on('click', function(){
+			alert("handler2");
+		});
+
+		var compositeParams = Ext.get('compositeParams');
+		var fn = function(e, e1, args){
+			alert(args.a);
+		};
+		compositeParams.on('click', fn, this, {
+			single : false, // 表示该函数只执行一次
+			delay : 100,
+			testId : 4
+		});
+
+		var moreListener = Ext.get('moreListener');
+		moreListener.on({
+			'click' : {
+				fn : fn,
+				delay : 100,
+				a : 'a',
+				b : 'b',
+				testId : 'testId'
+			},
+			'mouseover' : {
+				fn : fn,
+				single : true,
+				delay : 100,
+				testId : 'testId'
+			}
+		});
+
+		var capture1 = Ext.get('capture1');
+		capture1.on('click', function(){
+			Ext.util.Observable.capture(person, function(){
+				alert('capture1');
+				return true;
+			});		
+		});
+
+		Ext.EventManager.onTextResize(function(oldSize, newSize){
+			alert('oldSize: ' + oldSize + '    ' + 'newSize: ' + newSize);
+		});
+
+		var nameText = Ext.get('name');
+		nameText.on('keypress', function(e){
+			if(e.charCode == Ext.EventObject.SPACE){
+				Ext.Msg.alert('info', '空格按下');
+			}
+		});
+
+		// 监听鼠标滚轮
+		/*
+		Ext.get(document.body).on('mousewheel', function(e){
+			var delta = e.getWheelDelta();
+			var divTest = Ext.get('divTest');
+			var height = divTest.getHeight();
+			divTest.setHeight(height+delta*500, true);
+		});
+		*/
+		var box = new Ext.BoxComponent({
+			el: 'divTest1',
+			style: 'background-color: red; position: absolute;',
+			pageX: 100,
+			pageY: 50,
+			width: 200,
+			heigth: 150
+		});
+		box.render();
+		var pageHeader = new Ext.BoxComponent({
+		    el: 'divTest'
+		});
+
+		var panel = new Ext.Panel({
+			el: 'divTest2',
+			title: '测试2',
+			floating: true,
+			shadow: true,
+			draggable: true,
+			collapsible: true,
+			html: '测试内容',
+			pageX: 400,
+			pageY: 50,
+			width: 200,
+			height: 150
+		});
+		panel.render();
+
+		var tabs = new Ext.TabPanel({
+			renderTo: divTest3,
+			height: 100
+		});
+		tabs.add({
+			title: '标题1',
+			html: '内容1'
+		});
+		tabs.add({
+			id: Ext.id(),
+			title: '标题2',
+			html: '内容2',
+			closable: true
+		});
+		tabs.activate(1);
+	})
+</script>
+<body>
+<br/>
+<input type="button" id="walk" value="walk" />
+<input type="button" id="eat" value="eat" />
+<input type="button" id="sleep" value="sleep" />
+<input type="button" id="test" value="test" />
+<input type="button" id="compositeParams" value="compositeParams" />
+<input type="button" id="moreListener" value="moreListener" />
+<input type="button" id="capture1" value="capture1" />
+name: <input type="text" id="name" />
+<a href="grid.html">GridPanel</a>
+<a href="grid_ZN.html">GridPanel_ZN</a>
+<div id="divTest"></div>
+<div id="divTest1"></div>
+<div id="divTest2"></div>
+<div id="divTest3"></div>
+</body>
+</html>
